@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-// import { candidates as dummyCandidates } from '../data';
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import Candidate from '../components/Candidate';
 import ConfirmVote from '../components/ConfrimVote';

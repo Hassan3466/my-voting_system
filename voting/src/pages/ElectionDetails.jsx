@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { elections } from "../data";
-// import { candidates } from "../data";
-// import { voters } from "../data";
 import { useNavigate, useParams } from "react-router-dom";
 import ElectionCandidate from "../components/ElectionCandidate";
 import { IoIosAddCircle } from "react-icons/io";

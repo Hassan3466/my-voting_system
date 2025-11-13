@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { candidates } from '../data'
 import CandidateRating from './CandidateRating'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';

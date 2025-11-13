@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { candidates  } from '../data'
 import {UiActions} from '../store/ui-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
