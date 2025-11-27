@@ -162,42 +162,190 @@ const removeCandidate = async (req, res, next) => {
         
 //     }
 // } 
+// const voteCandidate = async (req, res, next) => {
+//   try {
+//     const candidateId = req.params.id;
+//     const voterId = req.user.id; // from your auth middleware
+
+//     // 1️⃣ Find the candidate
+//     const candidate = await Candidate.findById(candidateId).populate("election");
+//     if (!candidate) return next(new HttpError("Candidate not found", 404));
+
+//     const election = await Election.findById(candidate.election._id);
+//     const voter = await Voter.findById(voterId);
+
+//     if (!election || !voter) return next(new HttpError("Election or Voter not found", 404));
+
+//     // 2️⃣ Prevent double voting
+//     if (voter.votedElections.includes(election._id)) {
+//       return next(new HttpError("You have already voted in this election", 403));
+//     }
+
+//     // 3️⃣ Increment candidate’s votes
+//     candidate.voteCount = (candidate.voteCount || 0) + 1;
+//     await candidate.save();
+
+//     // ✅ 4️⃣ Add voter ID to election’s voters list
+//     election.voters.push(voter._id);
+//     await election.save();
+
+//     // ✅ 5️⃣ Add election ID to voter’s votedElections list
+//     voter.votedElections.push(election._id);
+//     await voter.save();
+
+//     res.status(200).json({ message: "Vote recorded successfully!" });
+//   } catch (error) {
+//     next(new HttpError(error.message || "Voting failed", 500));
+//   }
+// };
+// const voteCandidate = async (req, res, next) => {
+//   try {
+//     const {id: candidateId} = req.params;
+//     const {selectedElection} = req.body;
+
+//     const candidate = await CandidateModel.findById(candidateId);
+//     const newVoteCount = candidate.voteCount + 1;
+
+//     await CandidateModel.findByIdAndUpdate(candidateId, {voteCount: newVoteCount}, {new: true});
+
+//     const sess = await mongoose.startSession();
+//     sess.startTransaction();
+
+//     let voter = await VoterModel.findById(req.user.id);
+//     await voter.save({ session: sess });
+
+//     let election = await ElectionModel.findById(selectedElection);
+//     election.voters.push(voter);
+//     voter.votedElections.push(election);
+
+//     await election.save({ session: sess });
+//     await voter.save({ session: sess });
+//     await sess.commitTransaction();
+
+//     res.status(200).json({ message: "Vote recorded successfully" });
+//   } catch (error) {
+//     console.error("Vote Error:", error);
+//     return next(new HttpError(error.message || "Voting failed", 500));
+//   }
+// };
+
+// const voteCandidate = async (req, res, next) => {
+//   try {
+//     const { id: candidateId } = req.params;
+//     const { selectedElection } = req.body;
+
+//     // Prevent admins from voting
+//     if (req.user.isAdmin) {
+//       return next(new HttpError("Admins are not allowed to vote.", 403));
+//     }
+
+//     // Get voter
+//     const voter = await VoterModel.findById(req.user.id);
+//     if (!voter) return next(new HttpError("Voter not found.", 404));
+
+//     // Double-voting prevention
+//     if (voter.votedElections.includes(selectedElection)) {
+//       return next(new HttpError("You have already voted in this election.", 403));
+//     }
+
+//     // Fetch candidate + ensure they belong to the election
+//     const candidate = await CandidateModel.findById(candidateId);
+//     if (!candidate) return next(new HttpError("Candidate not found.", 404));
+
+//     if (String(candidate.election) !== String(selectedElection)) {
+//       return next(new HttpError("Candidate does not belong to this election.", 400));
+//     }
+
+//     // Start transaction
+//     const sess = await mongoose.startSession();
+//     sess.startTransaction();
+
+//     // increment votes
+//     candidate.voteCount = candidate.voteCount + 1;
+//     await candidate.save({ session: sess });
+
+//     // add voter → election
+//     const election = await ElectionModel.findById(selectedElection);
+//     election.voters.push(voter._id);
+//     await election.save({ session: sess });
+
+//     // add election → voter
+//     voter.votedElections.push(election._id);
+//     await voter.save({ session: sess });
+
+//     await sess.commitTransaction();
+//     sess.endSession();
+
+//     return res.status(200).json({
+//       message: "Vote recorded successfully",
+//       votedElections: voter.votedElections
+//     });
+
+//   } catch (error) {
+//     console.error("Vote Error:", error);
+//     return next(new HttpError(error.message || "Voting failed", 500));
+//   }
+// };
 const voteCandidate = async (req, res, next) => {
   try {
-    const candidateId = req.params.id;
-    const voterId = req.user.id; // from your auth middleware
+    const { id: candidateId } = req.params;
+    const { selectedElection } = req.body;
 
-    // 1️⃣ Find the candidate
-    const candidate = await Candidate.findById(candidateId).populate("election");
-    if (!candidate) return next(new HttpError("Candidate not found", 404));
-
-    const election = await Election.findById(candidate.election._id);
-    const voter = await Voter.findById(voterId);
-
-    if (!election || !voter) return next(new HttpError("Election or Voter not found", 404));
-
-    // 2️⃣ Prevent double voting
-    if (voter.votedElections.includes(election._id)) {
-      return next(new HttpError("You have already voted in this election", 403));
+    // 🚫 Prevent admins from voting
+    if (req.user.isAdmin) {
+      return next(new HttpError("Admins are not allowed to vote.", 403));
     }
 
-    // 3️⃣ Increment candidate’s votes
-    candidate.voteCount = (candidate.voteCount || 0) + 1;
-    await candidate.save();
+    // Get voter
+    const voter = await VoterModel.findById(req.user.id);
+    if (!voter) return next(new HttpError("Voter not found.", 404));
 
-    // ✅ 4️⃣ Add voter ID to election’s voters list
+    // 🚫 Prevent double voting
+    if (voter.votedElections.includes(selectedElection)) {
+      return next(new HttpError("You have already voted in this election.", 403));
+    }
+
+    // Fetch candidate
+    const candidate = await CandidateModel.findById(candidateId);
+    if (!candidate) return next(new HttpError("Candidate not found.", 404));
+
+    // Make sure candidate belongs to election
+    if (String(candidate.election) !== String(selectedElection)) {
+      return next(new HttpError("Candidate does not belong to this election.", 400));
+    }
+
+    // Start transaction
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+
+    // Increment candidate votes
+    candidate.voteCount += 1;
+    await candidate.save({ session: sess });
+
+    // Update election voters
+    const election = await ElectionModel.findById(selectedElection);
     election.voters.push(voter._id);
-    await election.save();
+    await election.save({ session: sess });
 
-    // ✅ 5️⃣ Add election ID to voter’s votedElections list
+    // Update voter voted elections
     voter.votedElections.push(election._id);
-    await voter.save();
+    await voter.save({ session: sess });  // <-- THIS WAS THE BUG
 
-    res.status(200).json({ message: "Vote recorded successfully!" });
+    await sess.commitTransaction();
+    sess.endSession();
+
+    return res.status(200).json({
+      message: "Vote recorded successfully",
+      votedElections: voter.votedElections,
+    });
+
   } catch (error) {
-    next(new HttpError(error.message || "Voting failed", 500));
+    console.error("Vote Error:", error);
+    return next(new HttpError(error.message || "Voting failed", 500));
   }
 };
+
+
 
 
 

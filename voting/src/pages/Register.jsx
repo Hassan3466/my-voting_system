@@ -70,6 +70,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [userData, setUserData] = useState({
@@ -96,13 +97,14 @@ const Register = () => {
         `${import.meta.env.VITE_API_URL}/voters/register`,
         userData
       );
+      toast.success("Registration successful!");
       navigate("/");
     } catch (error) {
       const message =
         error.response?.data?.message ||
         error.message ||
         "Something went wrong";
-      setError(message);
+      toast.error(message)
     }
   };
 

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"; // for navigation after login
 import { useDispatch } from "react-redux";      // for Redux state updates
 import { voteActions } from "../store/vote-slice"; // Redux actions for vote slice
 import { Link } from 'react-router-dom';
+import { toast } from "react-toastify";
+
 
 const Login = () => {
   // State to store user input
@@ -42,18 +44,23 @@ const Login = () => {
       dispatch(voteActions.changeCurrentVoter(flattenedUser));
 
 
+
+
+
+
       // // Save voter info in localStorage
       // localStorage.setItem("currentUser", JSON.stringify(newVoter));
 
       // // Update Redux state with the logged-in voter
       // dispatch(voteActions.changeCurrentVoter(newVoter));
 
+      toast.success("Login successful!");
       // Redirect user to results page
       navigate("/results");
     } catch (err) {
       // Handle error: either backend message or generic
       const message = err.response?.data?.message || err.message || "Login failed.";
-      setError(message);
+      toast.error(message)
     }
   };
 
