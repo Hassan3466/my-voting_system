@@ -35,8 +35,7 @@ const ConfrimVote = ({ selectedElection }) => {
   //get the candidate selected to be voted for
   const fetchCandidate = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/candidates/${selectedVoteCandidate}`,
+      const res = await axios.get("/candidates/${selectedVoteCandidate}",
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
       setModalCandidate(await res.data);
@@ -60,8 +59,7 @@ const ConfrimVote = ({ selectedElection }) => {
   // confirm vote for selected candidate
   const confirmVote = async () => {
     try {
-      const res = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/candidates/${selectedVoteCandidate}`,
+      const res = await axios.patch("/candidates/${selectedVoteCandidate}",
         { selectedElection },
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );

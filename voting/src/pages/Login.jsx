@@ -22,9 +22,8 @@ const Login = () => {
 
     try {
       // Send login request to backend
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/voters/login`, // Backend API URL from .env
-        userData, // email & password
+      const res = await axios.post("/voters/login", 
+        userData,
         { headers: { "Content-Type": "application/json" } } // JSON headers
       );
 

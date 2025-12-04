@@ -1,28 +1,28 @@
-const express = require("express");
-const cors = require("cors");
-// const {connect} = require("mongoose");
-const mongoose = require("mongoose");
-require("dotenv").config();
-const fileUpload = require("express-fileupload");
-const Routes = require("./routes/Routes")
-const{notFound, errorHandler} = require("./middleware/errorMiddleware")
+// const express = require("express");
+// const cors = require("cors");
+// // const {connect} = require("mongoose");
+// const mongoose = require("mongoose");
+// require("dotenv").config();
+// const fileUpload = require("express-fileupload");
+// const Routes = require("./routes/Routes")
+// const{notFound, errorHandler} = require("./middleware/errorMiddleware")
 
 
-const app = express()
-app.use(express.json({extended:true}))
-app.use(express.urlencoded({extended:true}))
-// app.use(cors({credentials:true, origin: ["http://localhost:/5173"]}))
-app.use(cors({ credentials: true, origin: ["http://localhost:5173","http://vote.fuo.edu.ng", "https://vote.fuo.edu.ng"] }));
-app.use(fileUpload())
+// const app = express()
+// app.use(express.json({extended:true}))
+// app.use(express.urlencoded({extended:true}))
+// // app.use(cors({credentials:true, origin: ["http://localhost:/5173"]}))
+// app.use(cors({ credentials: true, origin: ["http://localhost:5173","http://vote.fuo.edu.ng", "https://vote.fuo.edu.ng"] }));
+// app.use(fileUpload())
 
 
 
-app.use('/api', Routes)
-app.use(notFound)
-app.use(errorHandler)
+// app.use('/api', Routes)
+// app.use(notFound)
+// app.use(errorHandler)
 
 
-//creating our servers
+//creating our servers////////////
 
 
 // connect(process.env.MONGO_URL).then(app.listen(process.env.PORT, () => console.log(`Server started on port ${process.env.PORT}`))
@@ -35,7 +35,61 @@ app.use(errorHandler)
 //   })
 //   .catch((err) => console.error("MongoDB connection error:", err));
 
-mongoose.connect(process.env.MONGO_URL)
+// mongoose.connect(process.env.MONGO_URL)
+//   .then(() => {
+//     console.log("Connected to MongoDB Atlas!");
+//     console.log("Database:", mongoose.connection.name);
+//     console.log("Host:", mongoose.connection.host);
+
+//     app.listen(process.env.PORT || 5000, () => {
+//       console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+//     });
+//   })
+//   .catch((err) => console.error("MongoDB connection error:", err));
+
+
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("dotenv").config();
+const fileUpload = require("express-fileupload");
+const Routes = require("./routes/Routes");
+const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+
+const app = express();
+
+app.use(express.json({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+
+// CORS ALLOWED DOMAINS
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      "http://localhost:5173",
+      "http://vote.fuo.edu.ng",
+      "https://vote.fuo.edu.ng"
+    ],
+  })
+);
+
+// REQUIRED: Allow cookies/credentials in headers
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+// File Upload Middleware
+app.use(fileUpload());
+
+// API ROUTES
+app.use("/api", Routes);
+app.use(notFound);
+app.use(errorHandler);
+
+// DB + SERVER
+mongoose
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB Atlas!");
     console.log("Database:", mongoose.connection.name);

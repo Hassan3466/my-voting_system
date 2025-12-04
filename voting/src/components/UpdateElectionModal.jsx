@@ -22,8 +22,7 @@ const UpdateElectionModal = () => {
 
   const fetchElection = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/elections/${idOfElectionToUpdate}`,
+      const res = await axios.get("/elections/${idOfElectionToUpdate}",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -54,8 +53,7 @@ const UpdateElectionModal = () => {
       electionData.set('description', description);
       electionData.set('thumbnail', thumbnail);
 
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/elections/${idOfElectionToUpdate}`,
+      await axios.patch("/elections/${idOfElectionToUpdate}",
         electionData,
         {
           headers: { Authorization: `Bearer ${token}` },

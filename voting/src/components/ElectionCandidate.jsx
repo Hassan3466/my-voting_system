@@ -18,7 +18,7 @@ const ElectionCandidate = ({fullName, image, motto, _id: id}) => {
 
    const deleteCandidate =  async () =>{
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_API_URL}/candidates/${id}`,{withCredentials: true,
+      const res = await axios.delete("/candidates/${id}",{withCredentials: true,
         headers: { Authorization: `Bearer ${token}`},
       });
       navigate(0)

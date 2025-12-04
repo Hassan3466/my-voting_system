@@ -44,7 +44,7 @@ import { useNavigate } from 'react-router-dom';
   const getElections =  async()=>{
     setIsLoading(true)
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/elections`,{withCredentials: true,
+      const res = await axios.get("/elections",{withCredentials: true,
         headers: { Authorization: `Bearer ${token}`},
       });
       setElections(await res.data)

@@ -21,7 +21,7 @@ const Results = () => {
   // ✅ Normal async function — no hooks inside
   const getElections = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/elections`, {
+      const res = await axios.get("/elections", {
         withCredentials: true,
         headers: { Authorization: `Bearer ${token}` },
       });

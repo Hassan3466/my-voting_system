@@ -39,7 +39,7 @@ const Candidates = () => {
   //get candidates that belong to this election
   const getCandidates = async () =>{
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/elections/${selectedElection}/candidates`, {withCredentials: true,
+      const res = await axios.get("/elections/${selectedElection}/candidates", {withCredentials: true,
           headers: { Authorization: `Bearer ${token}`},
         });
         setCandidates(res.data)
@@ -60,7 +60,7 @@ const Candidates = () => {
   if (!voterId) return; // stop early if no voterId
   try {
     const res = await axios.get(
-      `${import.meta.env.VITE_API_URL}/voters/${voterId}`,
+      "/voters/${voterId}",
       {
         withCredentials: true,
         headers: { Authorization: `Bearer ${token}` },

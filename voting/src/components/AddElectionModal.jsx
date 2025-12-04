@@ -32,7 +32,7 @@ const AddElectionModal = () => {
                 electionData.set('title', title)
                 electionData.set('description', description)
                 electionData.set('thumbnail', thumbnail)
-                const res = await axios.post(`${import.meta.env.VITE_API_URL}/elections`, electionData, {withCredentials: true,
+                const res = await axios.post("/elections", electionData, {withCredentials: true,
                     headers: { Authorization: `Bearer ${token}`},
                 });
                 closeModal()

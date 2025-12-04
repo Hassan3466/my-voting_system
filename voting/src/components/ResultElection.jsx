@@ -26,8 +26,7 @@ const ResultElection = ({ _id, thumbnail, title}) => {
 
       setIsLoading(true)
       try {
-        const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/elections/${_id}/candidates`,
+        const res = await axios.get("/elections/${_id}/candidates",
         {
           withCredentials: true, // include cookies if needed
           headers: {
