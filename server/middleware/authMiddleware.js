@@ -3,7 +3,8 @@ const HttpError =  require("../models/ErrorModel")
 
 
 const authMiddleware = async (req, res, next) => {
-    const Authorization = req.headers.Authorization || req.headers.authorization;
+    // const Authorization = req.headers.Authorization || req.headers.authorization;
+    const Authorization = req.headers.authorization;
 
 
     if(Authorization && Authorization.startsWith("Bearer")) {
