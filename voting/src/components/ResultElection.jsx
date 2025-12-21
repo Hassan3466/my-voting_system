@@ -13,6 +13,7 @@ const ResultElection = ({ _id, thumbnail, title}) => {
     const token = useSelector((state) => state?.vote?.currentVoter?.token);
     const [electionCandidates, setElectionCandidates] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
 
 
     //get candidate that belong to this election iteration
